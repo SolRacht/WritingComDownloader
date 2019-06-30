@@ -13,7 +13,11 @@ libraryDependencies ++= Seq(
   "org.scalikejdbc"   %% "scalikejdbc"        % "3.+",
   "org.xerial"        %  "sqlite-jdbc"        % "3.+",
   "com.h2database"    %  "h2"                 % "1.4.+",
-  "ch.qos.logback"    %  "logback-classic"    % "1.2.+"
+  "ch.qos.logback"    %  "logback-classic"    % "1.2.+",
+  // XML
+  "org.scala-lang.modules" %% "scala-xml"     % "1.2.0",
+  "org.apache.commons"     % "commons-text"   % "1.6"
+
 )
 
 

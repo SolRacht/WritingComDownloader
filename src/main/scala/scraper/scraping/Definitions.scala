@@ -6,7 +6,7 @@ import java.util.Date
 case class Choice
 (
   name: String,
-  index: Int
+  index: Int // 1-based
 )
 
 case class Chapter

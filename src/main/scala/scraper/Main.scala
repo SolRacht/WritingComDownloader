@@ -10,6 +10,7 @@ import scala.util.Random
 import scraper.scraping.Scraper
 import scraper.util.RandomCoffee
 import scraper.actors.Commands._
+import scraper.html.Renderer
 
 trait MainStuff {
   // The number of Akka actors scraping chapters
@@ -61,6 +62,11 @@ trait MainStuff {
       Thread.sleep(1000)
     }
   }
+
+  def render(db:DB) = {
+    // Very basic HTML rendering of stories.
+    Renderer.render(db)
+  }
 }
 
 object Main extends App with MainStuff {
@@ -70,7 +76,13 @@ object Main extends App with MainStuff {
   lazy val db = new DB()
   lazy val scraper = new Scraper
 
-  scrapeNewChapters(scraper, db, config)
+  args.map(_.toLowerCase).last match {
+    case "render" =>
+      render(db)
+    case _ =>
+      scrapeNewChapters(scraper, db, config)
+  }
+
 
   println("Thank you for playing!")
   System.exit(0)

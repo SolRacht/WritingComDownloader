@@ -14,6 +14,13 @@ class StoryScraper(chapterScrapers: Seq[ActorRef], WorkMonitor: ActorRef) extend
   lazy val db = new DB()
   lazy val scraper = new Scraper
 
+  var _nextIndex = -1
+  def nextChapterScraperIndex: Int = {
+    _nextIndex += 1
+    _nextIndex %= chapterScrapers.size
+    _nextIndex
+  }
+
   def scrape(id:String): Unit = {
     val outline = scraper.getOutline(id)
     if (!db.storyExists(id)) {
@@ -28,7 +35,8 @@ class StoryScraper(chapterScrapers: Seq[ActorRef], WorkMonitor: ActorRef) extend
 
     newChapters.foreach { descent =>
       WorkMonitor ! WORK_ADDED
-      Random.shuffle(chapterScrapers).head ! SCRAPE_CHAPTER(id, descent, outline.title)
+      chapterScrapers(nextChapterScraperIndex) ! SCRAPE_CHAPTER(id, descent, outline.title)
+      Thread.sleep(10) // Allow other storyscrapers to signal
     }
   }
 

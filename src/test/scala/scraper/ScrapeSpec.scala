@@ -80,4 +80,10 @@ class ScrapeSpec extends FlatSpec with Matchers {
     }
     assert(outline.title === "Tiny Brother VS Big Sister")
   }
+
+  it should "fetch a story's title" in {
+    val outline = scraper.getOutline("2137802-The-Shrinking-Virus")
+    assert(outline.title === "The Shrinking Virus")
+
+  }
 }

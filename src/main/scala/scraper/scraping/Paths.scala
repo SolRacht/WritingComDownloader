@@ -7,6 +7,7 @@ object Paths {
 
   object outline {
     val title: Seq[String] = Seq(
+      ".proll",
       "#Content_Column_Inner > div.shadowBox.shadowBoxTop > table > tbody > tr > td:nth-child(2) > div:nth-child(2) > a"
     ).distinct
   }

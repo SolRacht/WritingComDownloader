@@ -1,8 +1,6 @@
 # Save the interactives!
 
-This utility saves writing.com interactive stories. When run, it scrapes the website for a list of stories you supply, and records story and chapter data to a local database.
-
-This does _not_ include any way to view and browse the saved stories. It only records them. I realize that this is a pain for the non-technically oriented, but saving stories as HTML pages is not ideal.
+This utility saves writing.com interactive stories. When run, it scrapes the website for a list of stories you supply, and records story and chapter data to a local database. You can then generate HTML pages from the data.
 
 This succeeds https://github.com/SolRacht/writing.com-archival because it is faster, strongly-typed, and a little better written.
 
@@ -30,3 +28,5 @@ sqlite3 db.db < migration.sql
 ### Execution
 
 From the base directory of your cloned repository, Run `sbt run`. This will kick off the script that visits writing.com and scrapes the stories you listed during the configuration step. Chapter and story data will be downloaded to your local database.
+
+Once you've downloaded all the chapters you want, run `sbt run render` to generate (and re-generate) HTML pages you can open in your browser under `stories/`. Start at `stories/{story}/outline.html`. Be warned that this is a _very_ basic generator: the intention of this utility is to scrape stories and save them to a database, not to provide a nice way to view them.
