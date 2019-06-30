@@ -33,4 +33,4 @@ From the base directory of your cloned repository, Run `sbt run`. This will kick
 
 #### Rendering HTML
 
-Once you've downloaded all the chapters you want, run `sbt run render` to generate (and re-generate) HTML pages you can open in your browser under `stories/`. Start at `stories/{story}/outline.html`. Be warned that this is a _very_ basic generator: the intention of this utility is to scrape stories and save them to a database, not to provide a nice way to view them.
+Once you've downloaded all the chapters you want, run `sbt "run render"` to generate (and re-generate) HTML pages you can open in your browser under `stories/`. Start at `stories/{story}/outline.html`. Be warned that this is a _very_ basic generator: the intention of this utility is to scrape stories and save them to a database, not to provide a nice way to view them.
