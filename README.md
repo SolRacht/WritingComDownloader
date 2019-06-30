@@ -1,8 +1,8 @@
 # Save the interactives!
 
-This utility saves writing.com interactive stories. When run, it scrapes the website and records story and chapter data to a local database.
+This utility saves writing.com interactive stories. When run, it scrapes the website for a list of stories you supply, and records story and chapter data to a local database.
 
-This does _not_ include any way to view and browse the saved stories. It only records them.
+This does _not_ include any way to view and browse the saved stories. It only records them. 
 
 ## Usage
 
@@ -10,7 +10,7 @@ Dependencies include [SBT](https://www.scala-sbt.org/), [Scala](https://scala-la
 
 ### Configuration
 
-Configuration can be found in `src/main/resources/applicaton.conf`. See that file for configuration instructions. You will need to provide a list of interactives you want downloaded, as well as your writing.com cookies. You are required to use cookies from a **premium** writing.com account, because I have no interest in writing logic to account for the rate limiter.
+Configuration can be found in `src/main/resources/applicaton.conf`. See that file for configuration instructions. You will need to provide a list of interactives you want downloaded, as well as your writing.com cookies. You are required to use cookies from a **premium** writing.com account. I have no interest in writing logic to account for the rate limiter.
 
 ### Database setup
 
