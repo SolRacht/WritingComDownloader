@@ -13,3 +13,4 @@ required.dat
 choya/sbt-dist/
 */.idea
 db/db.db
+stories/

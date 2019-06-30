@@ -27,6 +27,10 @@ sqlite3 db.db < migration.sql
 
 ### Execution
 
+#### Archiving stories
+
 From the base directory of your cloned repository, Run `sbt run`. This will kick off the script that visits writing.com and scrapes the stories you listed during the configuration step. Chapter and story data will be downloaded to your local database.
+
+#### Rendering HTML
 
 Once you've downloaded all the chapters you want, run `sbt run render` to generate (and re-generate) HTML pages you can open in your browser under `stories/`. Start at `stories/{story}/outline.html`. Be warned that this is a _very_ basic generator: the intention of this utility is to scrape stories and save them to a database, not to provide a nice way to view them.
