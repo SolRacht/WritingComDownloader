@@ -94,7 +94,9 @@ object Renderer {
 
     stories.zipWithIndex.foreach { case (story, index) =>
       println(s"Rendering ${index+1}/${stories.size}  [${story.title}]")
-      val dir = new File(s"stories/${story.title}")
+      // Remove characters that are illegal for files
+      val filename =story.title.trim.replace("""[\\\/\:\"\*\?\<\>\|\.]+""","_")
+      val dir = new File(s"stories/${filename}")
       dir.mkdirs()
 
       val outlineChapters = db.getStoryOutline(story.id)
