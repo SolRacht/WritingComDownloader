@@ -2,7 +2,7 @@
 
 This utility saves writing.com interactive stories. When run, it scrapes the website for a list of stories you supply, and records story and chapter data to a local database.
 
-This does _not_ include any way to view and browse the saved stories. It only records them. 
+This does _not_ include any way to view and browse the saved stories. It only records them. I realize that this is a pain for the non-technically oriented, but saving stories as HTML pages is not ideal.
 
 ## Usage
 
