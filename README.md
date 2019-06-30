@@ -29,7 +29,7 @@ sqlite3 db.db < migration.sql
 
 #### Archiving stories
 
-From the base directory of your cloned repository, Run `sbt run`. This will kick off the script that visits writing.com and scrapes the stories you listed during the configuration step. Chapter and story data will be downloaded to your local database.
+From the base directory of your cloned repository, Run `sbt "run scrape"`. This will kick off the script that visits writing.com and scrapes the stories you listed during the configuration step. Chapter and story data will be downloaded to your local database.
 
 #### Rendering HTML
 

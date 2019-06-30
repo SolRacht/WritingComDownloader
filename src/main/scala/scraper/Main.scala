@@ -79,7 +79,7 @@ object Main extends App with MainStuff {
   args.map(_.toLowerCase).last match {
     case "render" =>
       render(db)
-    case _ =>
+    case "scrape" =>
       scrapeNewChapters(scraper, db, config)
   }
 
