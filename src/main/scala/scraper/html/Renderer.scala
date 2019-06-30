@@ -92,7 +92,8 @@ object Renderer {
   def render(db:DB): Unit = {
     val stories = db.getStories
 
-    stories.foreach { story =>
+    stories.zipWithIndex.foreach { case (story, index) =>
+      println(s"Rendering ${index+1}/${stories.size}  [${story.title}]")
       val dir = new File(s"stories/${story.title}")
       dir.mkdirs()
 
