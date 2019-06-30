@@ -25,3 +25,6 @@ From the base directory of your cloned repository:
 ### Execution
 
 From the base directory of your cloned repository, Run `sbt run`. This will kick off a bunch of Akka actors that will visit writing.com using your credentials and scrape the interactives you listed during the configuration step. Chapter and story data will be downloaded to your local database.
+
+
+This utility succeeds https://github.com/SolRacht/writing.com-archival because it is faster, strongly-typed, and a little better written.

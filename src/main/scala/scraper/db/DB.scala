@@ -64,14 +64,14 @@ class DB(dbPath:String = "jdbc:sqlite:db/db.db") {
          ) values (
            $storyId,
            $descent,
-           ${c.author.getOrElse("[unknown]")},
+           ${c.author.map( n => sqls"${n}").getOrElse(sqls"NULL")},
            ${c.title},
            ${c.body},
            ${
         if (c.choices.isEmpty) {
           null
         } else {
-          c.choices.mkString("#")
+          c.choices.map(_.name).mkString("#")
         }
       },
            CURRENT_TIMESTAMP
@@ -162,6 +162,7 @@ class DB(dbPath:String = "jdbc:sqlite:db/db.db") {
               case (name, idx) =>
                 Choice(name, idx + 1)
             }
+            .toSeq
         }},
       author = rs.stringOpt("author"),
       dateCreated = sqliteTimestampFormat.parse(rs.string("date_created"))

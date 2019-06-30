@@ -23,10 +23,10 @@ class ScrapeSpec extends FlatSpec with Matchers {
       assert(chapter.author === Some("superdude9"))
       assert(chapter.choices.length === 5, chapter.choices)
       assert(chapter.choices(0).name.startsWith("To pick a client"), chapter.choices)
-      assert(chapter.choices(1).name.startsWith("day off"), chapter.choices)
-      assert(chapter.choices(2).name.startsWith("Stacy asks"), chapter.choices)
-      assert(chapter.choices(3).name.startsWith("Shannon asks"), chapter.choices)
-      assert(chapter.choices(4).name.startsWith("Before you decide"), chapter.choices)
+      assert(chapter.choices(1).name.startsWith("To take one last day off"), chapter.choices)
+      assert(chapter.choices(2).name.startsWith("Before you decide, Stacy"), chapter.choices)
+      assert(chapter.choices(3).name.startsWith("Before you decide, Shannon"), chapter.choices)
+      assert(chapter.choices(4).name.startsWith("Before you decide, Shannon"), chapter.choices)
     }
   }
 

@@ -19,12 +19,22 @@ class ChapterSpec extends FlatSpec with Matchers with BeforeAndAfterAll {
 
     assert(!db.chapterExists(testStoryId, "1"))
     db.saveChapter(ch, testStoryId, "1")
-    assert(db.getChapter(testStoryId, "1") == ch)
+    val getFirst = db.getChapter(testStoryId, "1")
+    assert(getFirst.author === ch.author)
+    assert(getFirst.body === ch.body)
+    assert(getFirst.choices === ch.choices)
+    assert(getFirst.title === ch.title)
+
+
     assert(db.chapterExists(testStoryId, "1"))
 
     val ch2 = Chapter("foo", "bar", Seq(), None)
 
     db.saveChapter(ch2, testStoryId, "12")
-    assert(db.getChapter(testStoryId, "12") == ch2)
+    val getSecond = db.getChapter(testStoryId, "12")
+    assert(getSecond.author === ch2.author)
+    assert(getSecond.body === ch2.body)
+    assert(getSecond.choices.toSet === ch2.choices.toSet)
+    assert(getSecond.title === ch2.title)
   }
 }
