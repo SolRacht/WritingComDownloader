@@ -4,6 +4,9 @@ This utility saves writing.com interactive stories. When run, it scrapes the web
 
 This does _not_ include any way to view and browse the saved stories. It only records them. I realize that this is a pain for the non-technically oriented, but saving stories as HTML pages is not ideal.
 
+This succeeds https://github.com/SolRacht/writing.com-archival because it is faster, strongly-typed, and a little better written.
+
+
 ## Usage
 
 Dependencies include [SBT](https://www.scala-sbt.org/), [Scala](https://scala-lang.org/), and [Sqlite3](https://sqlite.org/index.html). If you can build and run an SBT Scala project, you should be able to use this.
@@ -27,4 +30,3 @@ sqlite3 db.db < migration.sql
 ### Execution
 
 From the base directory of your cloned repository, Run `sbt run`. This will kick off the script that visits writing.com and scrapes the stories you listed during the configuration step. Chapter and story data will be downloaded to your local database.
-This utility succeeds https://github.com/SolRacht/writing.com-archival because it is faster, strongly-typed, and a little better written.
