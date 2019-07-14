@@ -11,7 +11,7 @@ class Browser {
     def setHeaders: Connection = {
       connection
         .cookie("my_session", config.my_session)
-        .cookie("user_token", config.user_token)
+        .cookie("user_ntoken", config.user_ntoken)
         .cookie("username", config.username)
         .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3")
         .header("Accept-Encoding", "gzip, deflate, br")

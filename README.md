@@ -13,6 +13,8 @@ Dependencies include [SBT](https://www.scala-sbt.org/), [Scala](https://scala-la
 
 Configuration can be found in `src/main/resources/applicaton.conf`. See that file for configuration instructions. You will need to provide a list of interactives you want downloaded, as well as your writing.com cookies. You are required to use cookies from a **premium** writing.com account. I have no interest in writing logic to account for the rate limiter.
 
+Sometimes, writing.com may log you out. In that case, you will have to log in again and update `application.conf` with your refreshed cookies.
+
 ### Database setup
 
 Stories are saved to a local Sqlite database, which you will need to create, following these steps:

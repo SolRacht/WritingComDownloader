@@ -72,6 +72,13 @@ class ScrapeSpec extends FlatSpec with Matchers {
     }
   }
 
+  it should "scrape another messed up chapter" in {
+    test("1530602-Pass-the-Write-Baton", "11111") {
+      chapter =>
+        assert(chapter.body.contains("Do you see that little, gray-blue house, so dark and empty?"))
+    }
+  }
+
   it should "fetch a story's links from the outline page" in {
     val outline = scraper.getOutline("1826427-Tiny-Brother-VS-Big-Sister")
     assert(outline.links.size >= 109)
