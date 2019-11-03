@@ -16,40 +16,40 @@ class ScrapeSpec extends FlatSpec with Matchers {
 
   it should "scrape first chapter" in {
     // First chapter
-    test("2147026-Tiny-Tutor", "1") { chapter =>
-      assert(chapter.title.equals("Morning Comes"))
-      assert(chapter.body.startsWith("You were woken up"))
+    test("1373411-Tiny-Life-Guard", "1") { chapter =>
+      assert(chapter.title.equals("You got the Job!!!"))
+      assert(chapter.body.contains("You stare up at a huge beautiful blonde"))
       assert(chapter.author.nonEmpty)
-      assert(chapter.author === Some("superdude9"))
+      assert(chapter.author === Some("someone"))
       assert(chapter.choices.length === 5, chapter.choices)
-      assert(chapter.choices(0).name.startsWith("To pick a client"), chapter.choices)
-      assert(chapter.choices(1).name.startsWith("To take one last day off"), chapter.choices)
-      assert(chapter.choices(2).name.startsWith("Before you decide, Stacy"), chapter.choices)
-      assert(chapter.choices(3).name.startsWith("Before you decide, Shannon"), chapter.choices)
-      assert(chapter.choices(4).name.startsWith("Before you decide, Shannon"), chapter.choices)
+      assert(chapter.choices(0).name.startsWith("Karen call Juli down"), chapter.choices)
+      assert(chapter.choices(1).name.startsWith("Get outta my office and find Juli!!!"), chapter.choices)
+      assert(chapter.choices(2).name.startsWith("I will give you a tour"), chapter.choices)
+      assert(chapter.choices(3).name.startsWith("Kim train him"), chapter.choices)
+      assert(chapter.choices(4).name.startsWith("Go take a self tour"), chapter.choices)
     }
   }
 
   it should "scrape normal chapter" in {
-    test("2147026-Tiny-Tutor", "113311121") { chapter =>
-      assert(chapter.title.equals("Adult Swim"))
-      assert(chapter.body.contains("You know how to swim, Sammy?"))
+    test("1373411-Tiny-Life-Guard", "112222111122") { chapter =>
+      assert(chapter.title.equals("Juli to the rescue?"))
+      assert(chapter.body.contains("Just you and me now."))
       assert(chapter.author.nonEmpty)
-      assert(chapter.author === Some("TheNumber1"))
+      assert(chapter.author === Some("rocky4mayor"))
       assert(chapter.choices.length === 2, chapter.choices)
-      assert(chapter.choices(0).name.contains("continues to play"), chapter.choices)
-      assert(chapter.choices(1).name.contains("inside to relax"), chapter.choices)
+      assert(chapter.choices(0).name.contains("Kim was telling the truth, Jim is under Juli."), chapter.choices)
+      assert(chapter.choices(1).name.contains("Kim is lying, Jim is still flatten to her butt."), chapter.choices)
     }
   }
 
   it should "scrape a missing author chapter" in {
-    test("2147026-Tiny-Tutor", "1433232") { chapter: Chapter =>
-      assert(chapter.title.equals("Shannon’s Sweet Find"))
-      assert(chapter.body.startsWith("After your eyes adjusted"))
+    test("1373411-Tiny-Life-Guard", "1151111112221211") { chapter: Chapter =>
+      assert(chapter.title.equals("The Foreign Girl's Tan"))
+      assert(chapter.body.contains("Elsa was tired from all"))
       assert(chapter.author.isEmpty)
       assert(chapter.choices.length === 2, chapter.choices)
-      assert(chapter.choices(0).name.contains("scooped up"), chapter.choices)
-      assert(chapter.choices(1).name.contains("use the restroom"), chapter.choices)
+      assert(chapter.choices(0).name.contains("She sees you, and manages to peel you off."), chapter.choices)
+      assert(chapter.choices(1).name.contains("You have tanned with Elsa! She can't see you!"), chapter.choices)
     }
   }
 
