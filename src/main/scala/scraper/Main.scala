@@ -76,11 +76,18 @@ object Main extends App with MainStuff {
   lazy val db = new DB()
   lazy val scraper = new Scraper
 
-  args.map(_.toLowerCase).last match {
-    case "render" =>
-      render(db)
-    case "scrape" =>
-      scrapeNewChapters(scraper, db, config)
+  try {
+    args.map(_.toLowerCase).last match {
+      case "render" =>
+        render(db)
+      case "scrape" =>
+        scrapeNewChapters(scraper, db, config)
+    }
+  } catch {
+    case e: Throwable =>
+      println(s"Exception: ${e.getMessage}")
+      e.printStackTrace()
+      System.exit(1)
   }
 
 

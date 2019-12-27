@@ -26,7 +26,7 @@ class StoryScraper(chapterScrapers: Seq[ActorRef], WorkMonitor: ActorRef) extend
       scraper.getOutline(id)
     } match {
       case Failure(exception) =>
-        println(s"FAILED! https://writing.com/main/interact/item_id/$id reason: ${exception.getMessage}")
+        println(s"FAILED! [$id] reason: ${exception.getMessage}")
       case Success(outline) =>
         if (!db.storyExists(id)) {
           db.insertStory(outline.title, id)
@@ -36,7 +36,9 @@ class StoryScraper(chapterScrapers: Seq[ActorRef], WorkMonitor: ActorRef) extend
           .map(_.split("/").last)
           .filter(!db.chapterExists(id, _))
 
-        println(s"[${outline.title}]: ${newChapters.size} new chapter(s).")
+        if (newChapters.nonEmpty) {
+          println(s"[${outline.title}]: ${newChapters.size} new chapter(s).")
+        }
 
         newChapters.foreach { descent =>
           WorkMonitor ! WORK_ADDED

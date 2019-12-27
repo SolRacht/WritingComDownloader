@@ -24,9 +24,9 @@ class ChapterScraper(monitor: ActorRef) extends Actor {
     } match {
       case Success(chapter) =>
         db.saveChapter(chapter, id, path)
-        println(s"[$title]: $path")
+        println(s"Saved [$title: $path]")
       case Failure(exception) =>
-        println(s"FAILED! https://writing.com/main/interact/item_id/$id/map/$path reason: ${exception.getMessage}")
+        println(s"FAILED! [$id : $path] reason: ${exception.getMessage}")
     }
   }
 
