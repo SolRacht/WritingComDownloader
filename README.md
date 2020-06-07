@@ -1,38 +1,49 @@
 # Save the interactives!
 
-This utility saves writing.com interactive stories. When run, it scrapes the website for a list of stories you supply, and records story and chapter data to a local database. You can then generate HTML pages from the data.
+This utility scrapes writing.com interactive stories. You can:
+- Save stories to a local database
+- Read them in your browser
 
-This succeeds https://github.com/SolRacht/writing.com-archival because it is faster, strongly-typed, and a little better written.
+You need a premium writing.com account to use it. It cannot handle the "Interactive Stories are Temporarily Unavailable" error page. 
 
+## Dependencies
+
+You will need to install [Scala](https://scala-lang.org/), [SBT](https://www.scala-sbt.org/), and [Sqlite3](https://sqlite.org/index.html). Make sure you can build and run an SBT project.
+
+### Before your first use
+
+You will need to configure it and create the database.
+
+#### Configuration
+
+In `src/main/resources/applicaton.conf`, you will need to change:
+
+- `username`,`my_session`,`user_ntoken`: These are your writing.com cookies
+  - If writing.com logs you out, you will need to log in again and update `application.conf` with your new cookies
+- `use_config_stories`: this must be either `true` or `false`
+  - if `true`: This will scrape stories whose IDs appear in `stories`. See the instructions in `application.conf`
+  - if `false`: This will scrape all interactive stories you have favorited. These appear on `writing.com/main/my_favorites`
+- `rendered_stories_directory`: This will create HTML files in this directory. (This can delete files. I recommend using a new, empty directory.)
+
+#### Database setup
+
+This saves stories to a local Sqlite database. You will need to create it by following these steps:
+
+From this directory:
+
+```
+touch db/db.db
+sqlite3 db/db.db < db/migration.sql
+```
 
 ## Usage
 
-Dependencies include [SBT](https://www.scala-sbt.org/), [Scala](https://scala-lang.org/), and [Sqlite3](https://sqlite.org/index.html). If you can build and run an SBT Scala project, you should be able to use this.
+### Scraping stories
 
-### Configuration
+Run `sbt "run scrape"`. Stories will be saved to your local database.
 
-Configuration can be found in `src/main/resources/applicaton.conf`. See that file for configuration instructions. You will need to provide a list of interactives you want downloaded, as well as your writing.com cookies. You are required to use cookies from a **premium** writing.com account. I have no interest in writing logic to account for the rate limiter.
+### Rendering HTML
 
-Sometimes, writing.com may log you out. In that case, you will have to log in again and update `application.conf` with your refreshed cookies.
+After scraping, run `sbt "run render"`. This renders your stories into HTML that you can read in your browser. Start at `outline.html`. 
+Note that this is a _very_ basic generator. It writes semantic HTML with no CSS styling.
 
-### Database setup
-
-Stories are saved to a local Sqlite database, which you will need to create, following these steps:
-
-From the base directory of your cloned repository:
-
-```
-cd db
-touch db.db
-sqlite3 db.db < migration.sql
-```
-
-### Execution
-
-#### Archiving stories
-
-From the base directory of your cloned repository, Run `sbt "run scrape"`. This will kick off the script that visits writing.com and scrapes the stories you listed during the configuration step. Chapter and story data will be downloaded to your local database.
-
-#### Rendering HTML
-
-Once you've downloaded all the chapters you want, run `sbt "run render"` to generate (and re-generate) HTML pages you can open in your browser under `stories/`. Start at `stories/{story}/outline.html`. Be warned that this is a _very_ basic generator: the intention of this utility is to scrape stories and save them to a database, not to provide a nice way to view them.

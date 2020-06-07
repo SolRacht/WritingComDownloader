@@ -1,10 +1,9 @@
-package scraper
+package scraper.scraping
 
 import org.scalatest.{BeforeAndAfterAll, FlatSpec, Matchers}
 import scraper.db.DB
-import scraper.scraping._
 
-class ChapterSpec extends FlatSpec with Matchers with BeforeAndAfterAll {
+class ChapterTest extends FlatSpec with Matchers with BeforeAndAfterAll {
   val db = new DB()
   val testStoryId = "TEST_TEST"
 

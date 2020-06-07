@@ -1,24 +1,41 @@
-package scraper
+package scraper.scraping
+
+import java.io.{File, PrintWriter}
+import java.time.Instant
 
 import org.scalatest._
-import scraper.scraping.{Chapter, Paths, Scraper}
 
-class ScrapeSpec extends FlatSpec with Matchers {
+class ScraperTest extends FlatSpec with Matchers {
 
   behavior of "scraper"
 
   val scraper = new Scraper
 
-  def test(itemId:String, path:String)(test: Chapter => Unit): Unit = {
-    val chapter = scraper.getChapter(itemId, path)
-    test(chapter)
+  def saveDoc() = {
+    new PrintWriter(new File(s"failed_doc_${Instant.now().toString}.html"))
+      .write(scraper.browser.lastDocument.toString)
   }
 
+  def test(itemId:String, path:String)(test: Chapter => Unit): Unit = {
+    try {
+      val chapter = scraper.getChapter(itemId, path)
+      test(chapter)
+    } catch  {
+      case e: Exception =>
+        saveDoc()
+        throw e
+    }
+  }
+
+//  it should "idenfity a rate-limited chapter" in {
+//    val doc = scraper.browser.get("1373411-Tiny-Life-Guard/map/1")
+//    assert(scraper.isRateLimited(doc) === true)
+//  }
+
   it should "scrape first chapter" in {
-    // First chapter
     test("1373411-Tiny-Life-Guard", "1") { chapter =>
       assert(chapter.title.equals("You got the Job!!!"))
-      assert(chapter.body.contains("You stare up at a huge beautiful blonde"))
+      assert(chapter.body.startsWith("<div> <span> You stare up at a huge beautiful blonde"))
       assert(chapter.author.nonEmpty)
       assert(chapter.author === Some("someone"))
       assert(chapter.choices.length === 5, chapter.choices)
@@ -33,19 +50,19 @@ class ScrapeSpec extends FlatSpec with Matchers {
   it should "scrape normal chapter" in {
     test("1373411-Tiny-Life-Guard", "112222111122") { chapter =>
       assert(chapter.title.equals("Juli to the rescue?"))
-      assert(chapter.body.contains("Just you and me now."))
+      assert(chapter.body.startsWith("<div> <span>You hear Roxy"))
       assert(chapter.author.nonEmpty)
       assert(chapter.author === Some("rocky4mayor"))
       assert(chapter.choices.length === 2, chapter.choices)
-      assert(chapter.choices(0).name.contains("Kim was telling the truth, Jim is under Juli."), chapter.choices)
-      assert(chapter.choices(1).name.contains("Kim is lying, Jim is still flatten to her butt."), chapter.choices)
+      assert(chapter.choices(0).name.startsWith("Kim was telling the truth, Jim is under Juli."), chapter.choices)
+      assert(chapter.choices(1).name.startsWith("Kim is lying, Jim is still flatten to her butt."), chapter.choices)
     }
   }
 
   it should "scrape a missing author chapter" in {
     test("1373411-Tiny-Life-Guard", "1151111112221211") { chapter: Chapter =>
       assert(chapter.title.equals("The Foreign Girl's Tan"))
-      assert(chapter.body.contains("Elsa was tired from all"))
+      assert(chapter.body.startsWith("<div> <span>Elsa was tired"))
       assert(chapter.author.isEmpty)
       assert(chapter.choices.length === 2, chapter.choices)
       assert(chapter.choices(0).name.contains("She sees you, and manages to peel you off."), chapter.choices)
@@ -68,19 +85,26 @@ class ScrapeSpec extends FlatSpec with Matchers {
     test("1384303-At-Home-and-Shrunken-O", "1353112211212122112112121") {
       chapter =>
         assert(chapter.choices.length === 2)
-        assert(chapter.choices.head.name.contains("You listen"))
+        assert(chapter.choices.head.name.startsWith("You listen"))
     }
   }
 
   it should "scrape another messed up chapter" in {
     test("1530602-Pass-the-Write-Baton", "11111") {
       chapter =>
-        assert(chapter.body.contains("Do you see that little, gray-blue house, so dark and empty?"))
+        assert(chapter.body.startsWith("<div> <span> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Do you see that little"))
     }
   }
 
   it should "fetch a story's links from the outline page" in {
-    val outline = scraper.getOutline("1826427-Tiny-Brother-VS-Big-Sister")
+    val outline =
+      try {
+        scraper.getOutline("1826427-Tiny-Brother-VS-Big-Sister")
+      } catch{
+        case e =>
+          saveDoc()
+          throw e
+      }
     assert(outline.links.size >= 109)
     outline.links.foreach { s =>
       assert(s.matches(Paths.chapter.chapterUrlRegex))
@@ -88,9 +112,28 @@ class ScrapeSpec extends FlatSpec with Matchers {
     assert(outline.title === "Tiny Brother VS Big Sister")
   }
 
+  it should "fetch a story's true item id from the outline page" in {
+    val outline =
+      try {
+        scraper.getOutline("1826427")
+      } catch{
+        case e =>
+          saveDoc()
+          throw e
+      }
+    assert(outline.trueLink === "1826427-Tiny-Brother-VS-Big-Sister")
+  }
+
   it should "fetch a story's title" in {
     val outline = scraper.getOutline("2137802-The-Shrinking-Virus")
     assert(outline.title === "The Shrinking Virus")
+  }
 
+  it should "return a list of fave story IDs from the faves list" in {
+    val faves = scraper.getFaves()
+    assert(faves.size > 100)
+    // Too bad it's not the full id with the name
+    assert(faves.contains("1907651"))
+    assert(faves.contains("2200726"))
   }
 }

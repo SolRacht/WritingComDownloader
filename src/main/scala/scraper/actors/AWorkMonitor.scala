@@ -6,7 +6,7 @@ import akka.actor.Actor
 import scraper.actors.Commands._
 
 
-class WorkMonitor(working: AtomicBoolean) extends Actor {
+class AWorkMonitor(working: AtomicBoolean) extends Actor {
   var work_units = 0
   def receive: PartialFunction[Any, Unit] = {
 

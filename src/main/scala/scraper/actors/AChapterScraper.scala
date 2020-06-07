@@ -13,7 +13,7 @@ import scala.util.{Failure, Success, Try}
  *      at the same time. Writers will just throw if they try to write while the db is locked. Not a huge issue.
  */
 
-class ChapterScraper(monitor: ActorRef) extends Actor {
+class AChapterScraper(monitor: ActorRef) extends Actor {
   lazy val name: String = UUID.randomUUID().toString.take(4)
   lazy val db = new DB()
   lazy val scraper = new Scraper
@@ -23,8 +23,11 @@ class ChapterScraper(monitor: ActorRef) extends Actor {
       scraper.getChapter(id, path)
     } match {
       case Success(chapter) =>
-        db.saveChapter(chapter, id, path)
-        println(s"Saved [$title: $path]")
+        // There seems to be a race condition I don't understand
+        if (!db.chapterExists(id, path)) {
+          db.saveChapter(chapter, id, path)
+          println(s"Saved [$title: $path]")
+        }
       case Failure(exception) =>
         println(s"FAILED! [$id : $path] reason: ${exception.getMessage}")
     }

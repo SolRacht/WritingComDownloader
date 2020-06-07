@@ -1,6 +1,6 @@
 name := "scraper"
 
-scalaVersion := "2.13.0"
+scalaVersion := "2.13.2"
 
 libraryDependencies ++= Seq(
   "org.scalatest"     %% "scalatest"          % "3.0.+" % Test,

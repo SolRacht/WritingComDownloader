@@ -1,4 +1,5 @@
 logs
+*.html
 target
 project/target
 /.idea
@@ -13,4 +14,5 @@ required.dat
 choya/sbt-dist/
 */.idea
 db/db.db
-stories/
+scraped/
+.swp

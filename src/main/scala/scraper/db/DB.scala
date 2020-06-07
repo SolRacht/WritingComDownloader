@@ -64,7 +64,7 @@ class DB(dbPath:String = "jdbc:sqlite:db/db.db") {
          ) values (
            $storyId,
            $descent,
-           ${c.author.map( n => sqls"${n}").getOrElse(sqls"NULL")},
+           ${c.author.map( n => sqls"$n").getOrElse(sqls"NULL")},
            ${c.title},
            ${c.body},
            ${

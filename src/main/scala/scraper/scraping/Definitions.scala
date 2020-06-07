@@ -21,8 +21,9 @@ case class Chapter
 case class Outline
 (
   links: Seq[String],
-  title: String
+  title: String,
+  trueLink: String
 )
 
-
+class RateLimitedException extends Exception { }
 
