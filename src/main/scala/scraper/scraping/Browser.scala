@@ -14,7 +14,6 @@ class Browser {
       connection
         .cookie("my_session", config.my_session)
         .cookie("user_ntoken", config.user_ntoken)
-        .cookie("username", config.username)
         .cookie("cpuid", UUID.randomUUID().toString)
         .cookie("__stripe_mid", UUID.randomUUID().toString)
         .cookie("__stripe_sid", UUID.randomUUID().toString)

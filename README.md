@@ -18,7 +18,7 @@ You will need to configure it and create the database.
 
 In `src/main/resources/applicaton.conf`, you will need to change:
 
-- `username`,`my_session`,`user_ntoken`: These are your writing.com cookies
+- `my_session`,`user_ntoken`: These are your writing.com cookies
   - If writing.com logs you out, you will need to log in again and update `application.conf` with your new cookies
 - `use_config_stories`: this must be either `true` or `false`
   - if `true`: This will scrape stories whose IDs appear in `stories`. See the instructions in `application.conf`

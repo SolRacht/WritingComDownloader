@@ -40,10 +40,6 @@ object Scrape {
   }
 
   def apply(config:Config): Unit = {
-    if (config.username.isEmpty) {
-      println("Configuration `username` is blank. Have you entered your writing.com cookies?")
-      System.exit(1)
-    }
     if (config.my_session.isEmpty) {
       println("Configuration `my_session` is blank. Have you entered your writing.com cookies?")
       System.exit(1)
