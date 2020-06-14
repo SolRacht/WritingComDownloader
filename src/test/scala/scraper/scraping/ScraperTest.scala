@@ -3,9 +3,11 @@ package scraper.scraping
 import java.io.{File, PrintWriter}
 import java.time.Instant
 
-import org.scalatest._
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
-class ScraperTest extends FlatSpec with Matchers {
+
+class ScraperTest extends AnyFlatSpec with Matchers {
 
   behavior of "scraper"
 
@@ -101,7 +103,7 @@ class ScraperTest extends FlatSpec with Matchers {
       try {
         scraper.getOutline("1826427-Tiny-Brother-VS-Big-Sister")
       } catch{
-        case e =>
+        case e: Throwable =>
           saveDoc()
           throw e
       }
@@ -117,7 +119,7 @@ class ScraperTest extends FlatSpec with Matchers {
       try {
         scraper.getOutline("1826427")
       } catch{
-        case e =>
+        case e: Throwable =>
           saveDoc()
           throw e
       }
@@ -130,7 +132,7 @@ class ScraperTest extends FlatSpec with Matchers {
   }
 
   it should "return a list of fave story IDs from the faves list" in {
-    val faves = scraper.getFaves()
+    val faves = scraper.getFaves
     assert(faves.size > 100)
     // Too bad it's not the full id with the name
     assert(faves.contains("1907651"))

@@ -1,9 +1,13 @@
 package scraper.db
 
 import java.text.SimpleDateFormat
+import java.time.Instant
+import java.util.Date
 
 import scalikejdbc._
 import scraper.scraping.{Chapter, Choice}
+
+import scala.util.{Failure, Success, Try}
 
 case class Story(id:String, title:String)
 case class OutlineChapter(name:String, descent:String)
@@ -165,8 +169,24 @@ class DB(dbPath:String = "jdbc:sqlite:db/db.db") {
             .toSeq
         }},
       author = rs.stringOpt("author"),
-      dateCreated = sqliteTimestampFormat.parse(rs.string("date_created"))
+      dateCreated = Try{sqliteTimestampFormat.parse(rs.string("date_created"))} match {
+        case Success(d)=>d
+        case Failure(_)=> Date.from(Instant.now)
+      },
+      descent = rs.string("descent")
     )
+  }
+
+  def getChapters(storyId: String, chapterIds: Seq[String]):Seq[Chapter] = {
+    tx { implicit s =>
+      sql"""select * from CHAPTERS
+          where story_id = $storyId
+          and descent in ($chapterIds)
+         """
+        .map(chapterFromRS)
+        .list()
+        .apply()
+    }
   }
 
   def getChapter(storyId: String, chapterId: String):Chapter = {
@@ -174,7 +194,7 @@ class DB(dbPath:String = "jdbc:sqlite:db/db.db") {
       sql"""select * from CHAPTERS
           where story_id = $storyId
           and descent = $chapterId
-    """
+         """
         .map(chapterFromRS)
         .single()
         .apply()

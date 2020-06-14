@@ -1,5 +1,8 @@
 package scraper.scraping
 
+import java.time.Instant
+import java.util.Date
+
 import org.jsoup.nodes.Document
 import org.jsoup.select.Elements
 
@@ -33,7 +36,7 @@ class Scraper() {
 
   val browser = new Browser
 
-  def getFaves(): Seq[String] = {
+  def getFaves: Seq[String] = {
     val browser = new Browser
     val doc = browser.getFromBase("main/my_favorites")
     doc.selects(Paths.faves.all, "faves")
@@ -46,7 +49,7 @@ class Scraper() {
       .map("(\\d+)".r.findFirstIn(_).get)
   }
 
-  def getOnlineUserCounts(): Seq[String] = {
+  def getOnlineUserCounts: Seq[String] = {
     val browser = new Browser
     val document = browser.getFromBase("main/current_users.php")
 
@@ -107,7 +110,7 @@ class Scraper() {
     ).getOrElse(true)
   }
 
-  def scrapeChapter(doc:Document):Chapter = {
+  def scrapeChapter(doc:Document, descent:String):Chapter = {
     if (isRateLimited(doc)) {
       throw new RateLimitedException
     }
@@ -145,13 +148,15 @@ class Scraper() {
       title,
       body,
       choices.toSeq,
-      authorName
+      authorName,
+      Date.from(Instant.now),
+      descent
     )
   }
 
   def getChapter(itemId: String, path:String): Chapter = {
     val doc = browser.get(itemId + "/map/" + path)
-    scrapeChapter(doc)
+    scrapeChapter(doc, path)
   }
 
   private def strToOpt(s:String): Option[String] = {

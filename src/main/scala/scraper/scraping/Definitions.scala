@@ -15,7 +15,8 @@ case class Chapter
   body: String,
   choices: Seq[Choice],
   author: Option[String],
-  dateCreated: Date = Date.from(Instant.now())
+  dateCreated: Date = Date.from(Instant.now()),
+  descent: String
 )
 
 case class Outline

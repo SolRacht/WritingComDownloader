@@ -10,7 +10,7 @@ class Browser {
   val config: Config = Config.get
 
   implicit class ConnnectionDecorator(connection:Connection) {
-    def setHeaders: Connection = {
+    def setHeaders(): Connection = {
       connection
         .cookie("my_session", config.my_session)
         .cookie("user_ntoken", config.user_ntoken)

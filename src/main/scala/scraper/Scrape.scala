@@ -35,7 +35,7 @@ object Scrape {
     if (config.useConfigStoryList) {
       config.storiesToScrape
     } else {
-      new Scraper().getFaves()
+      new Scraper().getFaves
     }
   }
 

@@ -3,22 +3,25 @@ name := "scraper"
 scalaVersion := "2.13.2"
 
 libraryDependencies ++= Seq(
-  "org.scalatest"     %% "scalatest"          % "3.0.+" % Test,
-  "com.typesafe"      % "config"              % "1.3.+",
+  "org.scalatest"     %% "scalatest"          % "3.1.+" % Test,
+  "com.typesafe"      % "config"              % "1.4.+",
   // Akka
-  "com.typesafe.akka" %% "akka-actor"         % "2.5.+",
+  "com.typesafe.akka" %% "akka-actor"         % "2.6.+",
   // Web scraper
-  "org.jsoup"         %  "jsoup"              % "1.12.+",
+  "org.jsoup"         %  "jsoup"              % "1.13.+",
   // DB
   "org.scalikejdbc"   %% "scalikejdbc"        % "3.+",
   "org.xerial"        %  "sqlite-jdbc"        % "3.+",
-  "com.h2database"    %  "h2"                 % "1.4.+",
   "ch.qos.logback"    %  "logback-classic"    % "1.2.+",
   // XML
-  "org.scala-lang.modules" %% "scala-xml"     % "1.2.0",
-  "org.apache.commons"     % "commons-text"   % "1.6"
+  "org.scala-lang.modules" %% "scala-xml"     % "1.3.+",
+  "org.apache.commons"     % "commons-text"   % "1.8"
 
 )
 
-
 fork := true
+
+scalacOptions ++= Seq(
+  "-deprecation"
+)
+

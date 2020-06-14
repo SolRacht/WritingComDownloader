@@ -8,7 +8,7 @@ import scraper.scraping.Scraper
 object CountUsers {
   def apply(scraper:Scraper, config:Config):Unit = {
 
-    val counts = scraper.getOnlineUserCounts().mkString(",")
+    val counts = scraper.getOnlineUserCounts.mkString(",")
 
     val file = new File(config.userCountFilePath )
     if (!file.exists()){

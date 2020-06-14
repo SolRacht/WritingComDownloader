@@ -6,29 +6,41 @@ import org.apache.commons.text.StringEscapeUtils
 import scraper.db.{DB, OutlineChapter}
 import scraper.scraping.Chapter
 
+import scala.concurrent.{Await, Future}
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.Duration
+
+
 object Render {
 
   private def getAlreadyRenderedDescents(dir: File): Seq[String] = {
-    dir.listFiles.map(_.getName).filter("(\\d)+.html".r.matches).map(_.split("\\.")(0))
+    dir.listFiles.map(_.getName).filter("(\\d)+.html".r.matches).toIndexedSeq.map(_.split("\\.")(0))
   }
 
   def apply(db:DB, config:Config): Unit = {
     val stories = db.getStories
+    val futures = db.getStories.zipWithIndex.map { case (story, index) =>
+      Future {
+        // Remove characters that are illegal for files
+        val filename = story.title.trim.replaceAll("""[\\\/\:\"\*\?\<\>\|\.]+""","_")
+        val dir = new File(s"${config.renderDir}/$filename")
+        dir.mkdirs()
 
-    stories.zipWithIndex.foreach { case (story, index) =>
-      // Remove characters that are illegal for files
-      val filename =story.title.trim.replace("""[\\\/\:\"\*\?\<\>\|\.]+""","_")
-      val dir = new File(s"${config.renderDir}/$filename")
-      dir.mkdirs()
-      println(s"Rendering ${index+1}/${stories.size}  [${story.title}] to ${dir.getCanonicalPath}")
+        println(s"Rendering ${index+1}/${stories.size}  [${story.title}] to ${dir.getCanonicalPath}")
 
-      val inDBChapters = db.getStoryOutline(story.id)
-      renderOutline(dir, inDBChapters, story.title)
-      getChaptersWeNeedToRender(inDBChapters, getAlreadyRenderedDescents(dir)).map { chapter =>
-        val dbChapter = db.getChapter(story.id, chapter.descent)
-        renderChapter(dir, chapter.descent, dbChapter, story.title, inDBChapters, getAlreadyRenderedDescents(dir))
+        val inDBChapters = db.getStoryOutline(story.id)
+
+        val toRenderChapterIds = getChaptersWeNeedToRender(inDBChapters, getAlreadyRenderedDescents(dir)).map(_.descent)
+
+        if (toRenderChapterIds.nonEmpty) {
+          renderOutline(dir, inDBChapters, story.title)
+          db.getChapters(story.id,toRenderChapterIds).map { chapter =>
+            renderChapter(dir, chapter, story.title, inDBChapters)
+          }
+        }
       }
     }
+    Await.result(Future.sequence(futures),Duration.Inf)
   }
 
   private def renderOutline(dir: File, chapters: Seq[OutlineChapter], title:String) = {
@@ -75,36 +87,45 @@ object Render {
     newChapters ++ parentsOfNewChapters
   }
 
-  private def renderChapter(dir: File, descent:String, chapter: Chapter, storyTitle: String, dbChapters: Seq[OutlineChapter], alreadyRenderedDescents: Seq[String]) = {
-    val file = new File(dir, s"$descent.html")
+  private def renderChapter(dir: File, chapter: Chapter, storyTitle: String, dbChapters: Seq[OutlineChapter]) = {
+    val file = new File(dir, s"${chapter.descent}.html")
     file.delete()
     file.createNewFile()
-    val html = chapterToHtml(descent, chapter, storyTitle, dbChapters)
+    val html = chapterToHtml(chapter, storyTitle, dbChapters)
     new FileOutputStream(file).write(StringEscapeUtils.unescapeHtml4(html.toString).getBytes)
-    println(s"Wrote [$storyTitle]:$descent")
+    println(s"Wrote [$storyTitle]:${chapter.descent}")
   }
 
-  private def chapterToHtml(descent: String, chapter: Chapter, storyTitle: String, dbChapters: Seq[OutlineChapter]) = {
+  private def chapterToHtml(chapter: Chapter, storyTitle: String, dbChapters: Seq[OutlineChapter]) = {
     val html =
       <html>
         <header>
           <h1>
             {storyTitle}
           </h1>
-          <h2>
-            {chapter.title}
-          </h2>
+          <h3>
+            {chapter.descent.length}: {chapter.title}
+          </h3>
           <h5>
-            By
-            {chapter.author.getOrElse("[unknown]")}
+            By {chapter.author.getOrElse("[unknown]")}
           </h5>
+          <a href={"outline.html"}>
+            Outline
+          </a>
+          { if (chapter.descent.length > 1) {
+            <br/>
+            <a href={chapter.descent.dropRight(1) + ".html"}>
+              Previous chapter
+            </a>
+          }}
         </header>
+        <br/>
         <body>
           {chapter.body}<br/>
           <br/>
           <ol>
             {chapter.choices.sortBy(_.index).map { choice =>
-            val choiceDescent = descent + choice.index
+            val choiceDescent = chapter.descent + choice.index
             val exists = dbChapters.exists(_.descent == choiceDescent)
             <li>
               {if (exists) {
