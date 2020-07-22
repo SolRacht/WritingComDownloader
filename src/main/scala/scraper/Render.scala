@@ -1,6 +1,6 @@
 package scraper
 
-import java.io.{File, FileOutputStream}
+import java.io.{File, FileOutputStream, FileWriter}
 
 import org.apache.commons.text.StringEscapeUtils
 import scraper.db.{DB, OutlineChapter}
@@ -9,6 +9,7 @@ import scraper.scraping.Chapter
 import scala.concurrent.{Await, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
+import scala.concurrent.blocking
 
 
 object Render {
@@ -21,21 +22,23 @@ object Render {
     val stories = db.getStories
     val futures = db.getStories.zipWithIndex.map { case (story, index) =>
       Future {
-        // Remove characters that are illegal for files
-        val filename = story.title.trim.replaceAll("""[\\\/\:\"\*\?\<\>\|\.]+""","_")
-        val dir = new File(s"${config.renderDir}/$filename")
-        dir.mkdirs()
+        blocking {
+          // Remove characters that are illegal for files
+          val filename = story.title.trim.replaceAll("""[\\\/\:\"\*\?\<\>\|\.]+""","_")
+          val dir = new File(s"${config.renderDir}/$filename")
+          dir.mkdirs()
 
-        println(s"Rendering ${index+1}/${stories.size}  [${story.title}] to ${dir.getCanonicalPath}")
+          println(s"Rendering ${index+1}/${stories.size}  [${story.title}] to ${dir.getCanonicalPath}")
 
-        val inDBChapters = db.getStoryOutline(story.id)
+          val inDBChapters = db.getStoryOutline(story.id)
 
-        val toRenderChapterIds = getChaptersWeNeedToRender(inDBChapters, getAlreadyRenderedDescents(dir)).map(_.descent)
+          val toRenderChapterIds = getChaptersWeNeedToRender(inDBChapters, getAlreadyRenderedDescents(dir)).map(_.descent)
 
-        if (toRenderChapterIds.nonEmpty) {
-          renderOutline(dir, inDBChapters, story.title)
-          db.getChapters(story.id,toRenderChapterIds).map { chapter =>
-            renderChapter(dir, chapter, story.title, inDBChapters)
+          if (toRenderChapterIds.nonEmpty) {
+            renderOutline(dir, inDBChapters, story.title)
+            db.getChapters(story.id,toRenderChapterIds).map { chapter =>
+              renderChapter(dir, chapter, story.title, inDBChapters)
+            }
           }
         }
       }
@@ -43,7 +46,7 @@ object Render {
     Await.result(Future.sequence(futures),Duration.Inf)
   }
 
-  private def renderOutline(dir: File, chapters: Seq[OutlineChapter], title:String) = {
+  private def renderOutline(dir: File, chapters: Seq[OutlineChapter], title:String): Unit = {
     val file = new File(dir, "outline.html")
     // Delete old one
     file.delete()
@@ -87,7 +90,7 @@ object Render {
     newChapters ++ parentsOfNewChapters
   }
 
-  private def renderChapter(dir: File, chapter: Chapter, storyTitle: String, dbChapters: Seq[OutlineChapter]) = {
+  private def renderChapter(dir: File, chapter: Chapter, storyTitle: String, dbChapters: Seq[OutlineChapter]): Unit = {
     val file = new File(dir, s"${chapter.descent}.html")
     file.delete()
     file.createNewFile()

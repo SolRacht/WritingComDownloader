@@ -49,8 +49,8 @@ class DB(dbPath:String = "jdbc:sqlite:db/db.db") {
       val exists =
         sql"Select 1 from chapters where story_id = $storyId and descent = $descent"
           .map(rs => rs.any(1))
-          .single
-          .apply
+          .single()
+          .apply()
       exists.isDefined
     }
   }
@@ -112,7 +112,7 @@ class DB(dbPath:String = "jdbc:sqlite:db/db.db") {
     }
   }
 
-  def storyFromRS(rs:WrappedResultSet) =
+  def storyFromRS(rs:WrappedResultSet): Story =
     Story(
       id = rs.string("story_id"),
       title = rs.string("title")

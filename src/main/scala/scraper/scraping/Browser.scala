@@ -35,8 +35,8 @@ class Browser {
   def getFromBase(url:String): Document = {
     lastDocument = Jsoup
       .connect("http://www.writing.com/" + url)
-      .setHeaders
-      .get
+      .setHeaders()
+      .get()
     lastDocument
   }
 }

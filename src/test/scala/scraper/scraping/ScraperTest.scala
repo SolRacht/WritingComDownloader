@@ -13,7 +13,7 @@ class ScraperTest extends AnyFlatSpec with Matchers {
 
   val scraper = new Scraper
 
-  def saveDoc() = {
+  def saveDoc(): Unit = {
     new PrintWriter(new File(s"failed_doc_${Instant.now().toString}.html"))
       .write(scraper.browser.lastDocument.toString)
   }

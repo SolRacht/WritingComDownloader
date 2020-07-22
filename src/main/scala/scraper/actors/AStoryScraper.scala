@@ -14,7 +14,7 @@ class AStoryScraper(chapterScrapers: Seq[ActorRef], WorkMonitor: ActorRef) exten
   lazy val db = new DB()
   lazy val scraper = new Scraper
 
-  var _nextIndex = -1
+  var _nextIndex: Int = -1
   def nextChapterScraperIndex: Int = {
     _nextIndex += 1
     _nextIndex %= chapterScrapers.size
