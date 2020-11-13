@@ -11,5 +11,5 @@ CREATE TABLE CHAPTERS (
 CREATE TABLE STORIES (
 	story_id varchar primary key,
 	title    varchar
-
 );
+

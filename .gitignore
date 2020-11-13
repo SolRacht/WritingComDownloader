@@ -16,3 +16,7 @@ choya/sbt-dist/
 db/db.db
 scraped/
 .swp
+.bloop/
+.bsp/
+.vscode/
+.metals/

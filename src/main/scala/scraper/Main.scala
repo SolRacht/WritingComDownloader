@@ -15,7 +15,7 @@ object Main extends App {
     args.map(_.toLowerCase).last match {
       case "render" => Render(db, config)
       case "scrape" => Scrape(config)
-      case "count"  => CountUsers(scraper, config)
+      case "count"  => CountUsers(scraper, config) // Experimental command
       case _        => println("Unknown command.")
     }
   } catch {

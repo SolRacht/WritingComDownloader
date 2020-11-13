@@ -1,0 +1,14 @@
+.git
+.gitignore
+README.md
+db/
+scraped/
+target/
+.dockerignore
+Dockerfile
+.bloop/
+.bsp/
+.idea/
+.metals/
+.vscode/
+.git/

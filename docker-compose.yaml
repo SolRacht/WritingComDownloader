@@ -1,0 +1,13 @@
+version: "3.8"
+services:
+  scrape:
+    build: .
+    command: "java -jar /root/target/scala-2.13/scraper.jar scrape"
+    volumes:
+      - ${DB}:/db
+  render:
+    build: .
+    command: "java -jar /root/target/scala-2.13/scraper.jar render"
+    volumes:
+      - ${DB}:/db
+      - ${RENDER}:/render

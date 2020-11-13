@@ -21,7 +21,7 @@ case class MinimalChapter
   dateCreated: java.util.Date
 )
 
-class DB(dbPath:String = "jdbc:sqlite:db/db.db") {
+class DB(dbPath:String = "jdbc:sqlite:/db") {
   GlobalSettings.loggingSQLAndTime = LoggingSQLAndTimeSettings(enabled= false)
   GlobalSettings.loggingConnections = false
   Class.forName("org.sqlite.JDBC")

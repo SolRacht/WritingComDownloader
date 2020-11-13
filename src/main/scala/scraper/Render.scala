@@ -20,30 +20,25 @@ object Render {
 
   def apply(db:DB, config:Config): Unit = {
     val stories = db.getStories
-    val futures = db.getStories.zipWithIndex.map { case (story, index) =>
-      Future {
-        blocking {
-          // Remove characters that are illegal for files
-          val filename = story.title.trim.replaceAll("""[\\\/\:\"\*\?\<\>\|\.]+""","_")
-          val dir = new File(s"${config.renderDir}/$filename")
-          dir.mkdirs()
+    db.getStories.zipWithIndex.map { case (story, index) =>
+      // Remove characters that are illegal for files
+      val filename = story.title.trim.replaceAll("""[\\\/\:\"\*\?\<\>\|\.]+""","_")
+      val dir = new File(s"/render/$filename")
+      dir.mkdirs()
 
-          println(s"Rendering ${index+1}/${stories.size}  [${story.title}] to ${dir.getCanonicalPath}")
+      println(s"Rendering ${index+1}/${stories.size}  [${story.title}] to ${dir.getCanonicalPath}")
 
-          val inDBChapters = db.getStoryOutline(story.id)
+      val inDBChapters = db.getStoryOutline(story.id)
 
-          val toRenderChapterIds = getChaptersWeNeedToRender(inDBChapters, getAlreadyRenderedDescents(dir)).map(_.descent)
+      val toRenderChapterIds = getChaptersWeNeedToRender(inDBChapters, getAlreadyRenderedDescents(dir)).map(_.descent)
 
-          if (toRenderChapterIds.nonEmpty) {
-            renderOutline(dir, inDBChapters, story.title)
-            db.getChapters(story.id,toRenderChapterIds).map { chapter =>
-              renderChapter(dir, chapter, story.title, inDBChapters)
-            }
-          }
+      if (toRenderChapterIds.nonEmpty) {
+        renderOutline(dir, inDBChapters, story.title)
+        db.getChapters(story.id,toRenderChapterIds).map { chapter =>
+          renderChapter(dir, chapter, story.title, inDBChapters)
         }
       }
     }
-    Await.result(Future.sequence(futures),Duration.Inf)
   }
 
   private def renderOutline(dir: File, chapters: Seq[OutlineChapter], title:String): Unit = {
