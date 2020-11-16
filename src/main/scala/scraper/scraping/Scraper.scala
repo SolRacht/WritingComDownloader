@@ -119,6 +119,7 @@ class Scraper() {
       .selects(Paths.chapter.body, "chapter body")
       .html()
 
+
     val authorName = Try(strToOpt(doc
       .selects(Paths.chapter.authorName, "author name")
       .text()

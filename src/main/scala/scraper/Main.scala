@@ -1,10 +1,14 @@
 package scraper
 
+import java.time.Instant
+
 import scraper.db.DB
 import scraper.scraping.Scraper
 import scraper.util.RandomCoffee
 
 object Main extends App {
+  println(s"################################")
+  println(s"Running at ${Instant.now()}")
   println(s"Your coffee today: $RandomCoffee")
 
   lazy val config = Config.get

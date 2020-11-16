@@ -2,7 +2,7 @@ name := "scraper"
 
 assemblyJarName := "scraper.jar"
 
-scalaVersion := "2.13.3"
+scalaVersion := "2.13.4"
 
 test in assembly := {}
 

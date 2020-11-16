@@ -29,7 +29,7 @@ class ScraperTest extends AnyFlatSpec with Matchers {
     }
   }
 
-//  it should "idenfity a rate-limited chapter" in {
+//  it should "identify a rate-limited chapter" in {
 //    val doc = scraper.browser.get("1373411-Tiny-Life-Guard/map/1")
 //    assert(scraper.isRateLimited(doc) === true)
 //  }
@@ -52,7 +52,7 @@ class ScraperTest extends AnyFlatSpec with Matchers {
   it should "scrape normal chapter" in {
     test("1373411-Tiny-Life-Guard", "112222111122") { chapter =>
       assert(chapter.title.equals("Juli to the rescue?"))
-      assert(chapter.body.startsWith("<div> <span>You hear Roxy"))
+      assert(chapter.body.startsWith("<span>You hear Roxy"))
       assert(chapter.author.nonEmpty)
       assert(chapter.author === Some("rocky4mayor"))
       assert(chapter.choices.length === 2, chapter.choices)
@@ -61,10 +61,23 @@ class ScraperTest extends AnyFlatSpec with Matchers {
     }
   }
 
+  it should "scrape another normal chapter" in {
+    test("2188228-Shrink-as-you-want-REWARDS", "1343221") { chapter =>
+      assert(chapter.title.equals("Jump and cling on."))
+      assert(chapter.body.startsWith("<span>You decided to"))
+      assert(chapter.author.nonEmpty)
+      assert(chapter.author === Some("Mc Writer"))
+      assert(chapter.choices.length === 3, chapter.choices)
+      assert(chapter.choices(0).name.startsWith("In between the"), chapter.choices)
+      assert(chapter.choices(1).name.startsWith("Inside her Bag."), chapter.choices)
+      assert(chapter.choices(2).name.startsWith("Going to a"), chapter.choices)
+    }
+  }
+
   it should "scrape a missing author chapter" in {
     test("1373411-Tiny-Life-Guard", "1151111112221211") { chapter: Chapter =>
       assert(chapter.title.equals("The Foreign Girl's Tan"))
-      assert(chapter.body.startsWith("<div> <span>Elsa was tired"))
+      assert(chapter.body.startsWith("<span>Elsa was tired"))
       assert(chapter.author.isEmpty)
       assert(chapter.choices.length === 2, chapter.choices)
       assert(chapter.choices(0).name.contains("She sees you, and manages to peel you off."), chapter.choices)
@@ -94,7 +107,7 @@ class ScraperTest extends AnyFlatSpec with Matchers {
   it should "scrape another messed up chapter" in {
     test("1530602-Pass-the-Write-Baton", "11111") {
       chapter =>
-        assert(chapter.body.startsWith("<div> <span> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Do you see that little"))
+        assert(chapter.body.startsWith("<span> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Do you see that little"))
     }
   }
 

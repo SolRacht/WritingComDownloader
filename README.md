@@ -5,7 +5,7 @@ This program scrapes writing.com interactive stories. You can:
 - Save stories to a local database
 - Read them in your browser
 
-You need a premium writing.com account to use it. It cannot handle the "Interactive Stories are Temporarily Unavailable" error page. 
+You need a paid (basic or above) writing.com account to use this. It cannot handle the "Interactive Stories are Temporarily Unavailable" error page. 
 
 ## Setup
 
@@ -18,8 +18,8 @@ In `src/main/resources/applicaton.conf`, you will need to change:
 - `my_session` and `user_ntoken`: These are your writing.com cookies.
   - If writing.com logs you out, you will need to log in again and update `application.conf` with your new cookies
 - `use_config_stories`: this must be either `true` or `false`
-  - `false`: save your favorite interactive stories. These appear in `writing.com/main/my_favorites`
-  - `true`: save the stories in `stories`. See the instructions in `application.conf`
+  - `false`: save interactive stories you have favorited. These appear here: `writing.com/main/my_favorites`
+  - `true`: only save the stories in `stories`. See the instructions in `application.conf`
 
 ### Database setup
 
@@ -29,17 +29,19 @@ You will need to create it by following these steps:
 ```
 # Create an empty file
 touch wcomdownloader.db
-# Run the migrations (assumes you are in in the root directory of this repo)
+# Run the migrations (assumes you are in in the base directory of this repo)
 sqlite3 wcomdownloader.db < db/migration.sql
 ```
 
-### Docker image setup
+### Docker image build
+
+Just run:
 
 ```
 docker-compose build
 ```
 
-You will need to run this command every time the code updates, or if you update the configuration.
+Re-run this every time the code updates, or if you update the configuration file.
 
 ## Usage
 
