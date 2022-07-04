@@ -18,7 +18,7 @@ class AChapterScraper(monitor: ActorRef) extends Actor {
   lazy val db = new DB()
   lazy val scraper = new Scraper
 
-  def scrape(id:String, path:String, title: String): Unit = {
+  def scrape(id: String, path: String, title: String): Unit = {
     Try {
       scraper.getChapter(id, path)
     } match {

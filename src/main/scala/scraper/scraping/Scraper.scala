@@ -13,13 +13,13 @@ class Scraper() {
   implicit class ImplicitDocument(doc: Document) {
 
     def selects(paths: Seq[String], failureName: String): Elements = {
-      var res:Elements = null
+      var res: Elements = null
 
       for (p <- paths) {
         if (res == null) {
           Try(doc.select(p)) match {
             case Success(s) =>
-              if (!s.isEmpty){
+              if (!s.isEmpty) {
                 res = s
               }
             case Failure(_) =>
@@ -39,7 +39,8 @@ class Scraper() {
   def getFaves: Seq[String] = {
     val browser = new Browser
     val doc = browser.getFromBase("main/my_favorites")
-    doc.selects(Paths.faves.all, "faves")
+    doc
+      .selects(Paths.faves.all, "faves")
       .first()
       .getElementsByAttribute("href")
       .eachAttr("href")
@@ -63,14 +64,15 @@ class Scraper() {
       document.selects(Paths.userCounts.privateSessions, "wtf").text(),
       document.selects(Paths.userCounts.totalLoggedIn, "wtf").text(),
       document.selects(Paths.userCounts.guestVisitors, "wtf").text(),
-      document.selects(Paths.userCounts.totalSiteUsers, "wtf").text(),
+      document.selects(Paths.userCounts.totalSiteUsers, "wtf").text()
     )
-      .map(_.replace(",",""))
+      .map(_.replace(",", ""))
   }
 
-  def isRateLimited(doc:Document): Boolean = {
+  def isRateLimited(doc: Document): Boolean = {
     Try(
-      doc.selects(Paths.general.rateLimiter, "Not rate limited!")
+      doc
+        .selects(Paths.general.rateLimiter, "Not rate limited!")
         .text
         .startsWith("Just a minute...")
     ) match {
@@ -81,10 +83,19 @@ class Scraper() {
     }
   }
 
-  def scrapeOutline(doc:Document): Outline = {
+  def scrapeOutline(doc: Document): Outline = {
     val links = doc.select("pre.norm").select("a[href]")
-    val title = doc.selects(Paths.outline.title, "story title (does this story still exist?)").text
-    val trueLink = doc.selects(Paths.outline.title, "story title").attr("href").split("/").last
+    val title = doc
+      .selects(
+        Paths.outline.title,
+        "story title (does this story still exist?)"
+      )
+      .text
+    val trueLink = doc
+      .selects(Paths.outline.title, "story title")
+      .attr("href")
+      .split("/")
+      .last
 
     Outline(
       links = links.eachAttr("href").asScala.toSeq,
@@ -101,7 +112,7 @@ class Scraper() {
     scrapeOutline(doc)
   }
 
-  def hasChoices(doc:Document):Boolean =  {
+  def hasChoices(doc: Document): Boolean = {
     Try(
       !doc
         .selects(Paths.chapter.deadEnd, "dead end")
@@ -110,7 +121,7 @@ class Scraper() {
     ).getOrElse(true)
   }
 
-  def scrapeChapter(doc:Document, descent:String):Chapter = {
+  def scrapeChapter(doc: Document, descent: String): Chapter = {
     if (isRateLimited(doc)) {
       throw new RateLimitedException
     }
@@ -119,11 +130,13 @@ class Scraper() {
       .selects(Paths.chapter.body, "chapter body")
       .html()
 
-
-    val authorName = Try(strToOpt(doc
-      .selects(Paths.chapter.authorName, "author name")
-      .text()
-    )).getOrElse(None)
+    val authorName = Try(
+      strToOpt(
+        doc
+          .selects(Paths.chapter.authorName, "author name")
+          .text()
+      )
+    ).getOrElse(None)
 
     val title = doc
       .selects(Paths.chapter.title, "chapter title")
@@ -155,16 +168,15 @@ class Scraper() {
     )
   }
 
-  def getChapter(itemId: String, path:String): Chapter = {
+  def getChapter(itemId: String, path: String): Chapter = {
     val doc = browser.get(itemId + "/map/" + path)
     scrapeChapter(doc, path)
   }
 
-  private def strToOpt(s:String): Option[String] = {
+  private def strToOpt(s: String): Option[String] = {
     if (s.isBlank)
       None
     else
       Some(s)
   }
 }
-

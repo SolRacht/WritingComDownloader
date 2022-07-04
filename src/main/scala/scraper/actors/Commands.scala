@@ -2,10 +2,10 @@ package scraper.actors
 
 object Commands {
   // StoryScraper
-  case class SCRAPE_STORY(id:String)
+  case class SCRAPE_STORY(id: String)
 
   // ChapterScraper
-  case class SCRAPE_CHAPTER(id:String, path:String, title: String)
+  case class SCRAPE_CHAPTER(id: String, path: String, title: String)
 
   // WorkMonitor
   case class WORK_ADDED()

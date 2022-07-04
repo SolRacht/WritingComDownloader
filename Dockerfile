@@ -1,8 +1,8 @@
-FROM openjdk:16-jdk-alpine3.12
+FROM openjdk:18-jdk-alpine
 
-ENV SCALA_VERSION=2.13.4 \
+ENV SCALA_VERSION=2.13.8 \
     SCALA_HOME=/usr/share/scala \
-    SBT_VERSION=1.4.5 \
+    SBT_VERSION=1.6.2 \
     PATH="/usr/local/sbt/bin/:$PATH"
 
 # Download SBT

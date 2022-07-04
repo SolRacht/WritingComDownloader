@@ -9,25 +9,24 @@ import scraper.scraping.{Chapter, Choice}
 
 import scala.util.{Failure, Success, Try}
 
-case class Story(id:String, title:String)
-case class OutlineChapter(name:String, descent:String)
+case class Story(id: String, title: String)
+case class OutlineChapter(name: String, descent: String)
 case class ChapterDescriptor(storyId: String, chapterId: String)
-case class MinimalChapter
-(
-  storyId: String,
-  chapterId: String,
-  chapterName: String,
-  author: Option[String],
-  dateCreated: java.util.Date
+case class MinimalChapter(
+    storyId: String,
+    chapterId: String,
+    chapterName: String,
+    author: Option[String],
+    dateCreated: java.util.Date
 )
 
-class DB(dbPath:String = "jdbc:sqlite:/db") {
-  GlobalSettings.loggingSQLAndTime = LoggingSQLAndTimeSettings(enabled= false)
+class DB(dbPath: String = "jdbc:sqlite:/db") {
+  GlobalSettings.loggingSQLAndTime = LoggingSQLAndTimeSettings(enabled = false)
   GlobalSettings.loggingConnections = false
   Class.forName("org.sqlite.JDBC")
   ConnectionPool.singleton(dbPath, "", "")
 
-  def tx[A](body: DBSession => A):A = {
+  def tx[A](body: DBSession => A): A = {
     using(scalikejdbc.DB(ConnectionPool.borrow())) { db =>
       db.localTx(body)
     }
@@ -68,16 +67,14 @@ class DB(dbPath:String = "jdbc:sqlite:/db") {
          ) values (
            $storyId,
            $descent,
-           ${c.author.map( n => sqls"$n").getOrElse(sqls"NULL")},
+           ${c.author.map(n => sqls"$n").getOrElse(sqls"NULL")},
            ${c.title},
            ${c.body},
-           ${
-        if (c.choices.isEmpty) {
+           ${if (c.choices.isEmpty) {
           null
         } else {
           c.choices.map(_.name).mkString("#")
-        }
-      },
+        }},
            CURRENT_TIMESTAMP
          )
     """
@@ -105,20 +102,21 @@ class DB(dbPath:String = "jdbc:sqlite:/db") {
     }
   }
 
-  def insertStory(name:String, id:String): Int = {
+  def insertStory(name: String, id: String): Int = {
     tx { implicit s =>
       sql"insert into STORIES (story_id, title) values ($id, $name)"
-        .update().apply()
+        .update()
+        .apply()
     }
   }
 
-  def storyFromRS(rs:WrappedResultSet): Story =
+  def storyFromRS(rs: WrappedResultSet): Story =
     Story(
       id = rs.string("story_id"),
       title = rs.string("title")
     )
 
-  def getStory(id:String):Story = {
+  def getStory(id: String): Story = {
     tx { implicit s =>
       sql"select * from STORIES where story_id = $id"
         .map(storyFromRS)
@@ -128,7 +126,7 @@ class DB(dbPath:String = "jdbc:sqlite:/db") {
     }
   }
 
-  def getStories:Seq[Story] = {
+  def getStories: Seq[Story] = {
     tx { implicit s =>
       sql"select * from STORIES"
         .map(storyFromRS)
@@ -137,7 +135,7 @@ class DB(dbPath:String = "jdbc:sqlite:/db") {
     }
   }
 
-  def getStoryOutline(storyId: String):Seq[OutlineChapter] = {
+  def getStoryOutline(storyId: String): Seq[OutlineChapter] = {
     tx { implicit s =>
       sql"""select title, descent from CHAPTERS where story_id = $storyId"""
         .map(rs =>
@@ -152,7 +150,7 @@ class DB(dbPath:String = "jdbc:sqlite:/db") {
   }
 
   val sqliteTimestampFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-  def chapterFromRS(rs:WrappedResultSet): Chapter =  {
+  def chapterFromRS(rs: WrappedResultSet): Chapter = {
     Chapter(
       title = rs.string("title"),
       body = rs.string("body"),
@@ -162,22 +160,26 @@ class DB(dbPath:String = "jdbc:sqlite:/db") {
           case None =>
             Seq()
           case Some(sq) =>
-            sq.split("#").zipWithIndex.map {
-              case (name, idx) =>
+            sq.split("#")
+              .zipWithIndex
+              .map { case (name, idx) =>
                 Choice(name, idx + 1)
-            }
-            .toSeq
-        }},
+              }
+              .toSeq
+        }
+      },
       author = rs.stringOpt("author"),
-      dateCreated = Try{sqliteTimestampFormat.parse(rs.string("date_created"))} match {
-        case Success(d)=>d
-        case Failure(_)=> Date.from(Instant.now)
+      dateCreated = Try {
+        sqliteTimestampFormat.parse(rs.string("date_created"))
+      } match {
+        case Success(d) => d
+        case Failure(_) => Date.from(Instant.now)
       },
       descent = rs.string("descent")
     )
   }
 
-  def getChapters(storyId: String, chapterIds: Seq[String]):Seq[Chapter] = {
+  def getChapters(storyId: String, chapterIds: Seq[String]): Seq[Chapter] = {
     tx { implicit s =>
       sql"""select * from CHAPTERS
           where story_id = $storyId
@@ -189,7 +191,7 @@ class DB(dbPath:String = "jdbc:sqlite:/db") {
     }
   }
 
-  def getChapter(storyId: String, chapterId: String):Chapter = {
+  def getChapter(storyId: String, chapterId: String): Chapter = {
     tx { implicit s =>
       sql"""select * from CHAPTERS
           where story_id = $storyId

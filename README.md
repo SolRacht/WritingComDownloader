@@ -9,11 +9,11 @@ You need a paid (basic or above) writing.com account to use this. It cannot hand
 
 ## Setup
 
-To run this program, you need [Docker](https://www.docker.com/) and [Sqlite3](https://sqlite.org/index.html).
+To build and run this program, you need [Docker](https://www.docker.com/) and [Sqlite3](https://sqlite.org/index.html).
 
 ### Configuration
 
-In `src/main/resources/applicaton.conf`, you will need to change:
+Before building, you need to change some values in `src/main/resources/applicaton.conf`:
 
 - `my_session` and `user_ntoken`: These are your writing.com cookies.
   - If writing.com logs you out, you will need to log in again and update `application.conf` with your new cookies
@@ -23,14 +23,14 @@ In `src/main/resources/applicaton.conf`, you will need to change:
 
 ### Database setup
 
-This will save stories to a local Sqlite database. This is just a file on your computer.
-You will need to create it by following these steps:
+Before running, you need to create the database. The program saves stories to a local Sqlite database. This is just a file on your computer.
+You will need to create it by following these steps (linux/mac command line):
 
 ```
 # Create an empty file
-touch wcomdownloader.db
+touch data.db
 # Run the migrations (assumes you are in in the base directory of this repo)
-sqlite3 wcomdownloader.db < db/migration.sql
+sqlite3 data.db < db/migration.sql
 ```
 
 ### Docker image build
@@ -52,7 +52,7 @@ This will scrape writing.com for stories and save them to your local database.
 Run the docker-compose service `scrape`, supplying the path to the database you created earlier as an environment variable:
 
 ```
-DB=/path/to/wcomdownloader.db docker-compose run scrape
+DB=/path/to/data.db docker-compose run scrape
 ```
 
 ### Rendering HTML

@@ -6,13 +6,12 @@ import com.typesafe.config.ConfigFactory
 
 import scala.jdk.CollectionConverters._
 
-case class Config
-(
-  my_session: String,
-  user_ntoken: String,
-  storiesToScrape: Seq[String],
-  userCountFilePath: String,
-  useConfigStoryList: Boolean
+case class Config(
+    my_session: String,
+    user_ntoken: String,
+    storiesToScrape: Seq[String],
+    userCountFilePath: String,
+    useConfigStoryList: Boolean
 )
 
 object Config {

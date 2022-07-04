@@ -9,7 +9,8 @@ import scraper.scraping.Scraper
 
 import scala.util.{Failure, Success, Try}
 
-class AStoryScraper(chapterScrapers: Seq[ActorRef], WorkMonitor: ActorRef) extends Actor {
+class AStoryScraper(chapterScrapers: Seq[ActorRef], WorkMonitor: ActorRef)
+    extends Actor {
   lazy val name: String = UUID.randomUUID().toString.take(4)
   lazy val db = new DB()
   lazy val scraper = new Scraper
@@ -21,7 +22,7 @@ class AStoryScraper(chapterScrapers: Seq[ActorRef], WorkMonitor: ActorRef) exten
     _nextIndex
   }
 
-  def scrape(preliminaryId:String): Unit = {
+  def scrape(preliminaryId: String): Unit = {
     Try {
       scraper.getOutline(preliminaryId)
     } match {
@@ -42,19 +43,22 @@ class AStoryScraper(chapterScrapers: Seq[ActorRef], WorkMonitor: ActorRef) exten
           println(s"[${outline.title}]: ${newChapters.size} new chapter(s).")
           newChapters.foreach { descent =>
             WorkMonitor ! WORK_ADDED
-            chapterScrapers(nextChapterScraperIndex) ! SCRAPE_CHAPTER(id, descent, outline.title)
+            chapterScrapers(nextChapterScraperIndex) ! SCRAPE_CHAPTER(
+              id,
+              descent,
+              outline.title
+            )
             Thread.sleep(20) // Allow other storyscrapers to signal
           }
         }
     }
   }
 
-  def receive: PartialFunction[Any, Unit] = {
-    case SCRAPE_STORY(id) =>
-      try {
-        scrape(id)
-      } finally {
-        WorkMonitor ! WORK_COMPLETED
-      }
+  def receive: PartialFunction[Any, Unit] = { case SCRAPE_STORY(id) =>
+    try {
+      scrape(id)
+    } finally {
+      WorkMonitor ! WORK_COMPLETED
+    }
   }
 }

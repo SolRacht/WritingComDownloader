@@ -31,7 +31,7 @@ object Scrape {
     (workMonitor, storyScrapers)
   }
 
-  private def getStoryIds(config:Config): Seq[String] = {
+  private def getStoryIds(config: Config): Seq[String] = {
     if (config.useConfigStoryList) {
       config.storiesToScrape
     } else {
@@ -39,13 +39,17 @@ object Scrape {
     }
   }
 
-  def apply(config:Config): Unit = {
+  def apply(config: Config): Unit = {
     if (config.my_session.isEmpty) {
-      println("Configuration `my_session` is blank. Have you entered your writing.com cookies?")
+      println(
+        "Configuration `my_session` is blank. Have you entered your writing.com cookies?"
+      )
       System.exit(1)
     }
     if (config.user_ntoken.isEmpty) {
-      println("Configuration `user_ntoken` is blank. Have you entered your writing.com cookies?")
+      println(
+        "Configuration `user_ntoken` is blank. Have you entered your writing.com cookies?"
+      )
       System.exit(1)
     }
     val stillWorking = new AtomicBoolean(true)
@@ -55,13 +59,12 @@ object Scrape {
     println(s"${storyIds.length} stories to check.")
 
     // Evenly and randomly signal scrapers with story IDs.
-    evenRandomShuffle(storyIds, storyScrapers) {
-      case (storyId, scraper) =>
-        // Signal the monitor before the work begins to avoid a race condition.
-        workMonitor ! WORK_ADDED
-        // Sleep to stagger the work out a bit.
-        Thread.sleep(10)
-        scraper ! SCRAPE_STORY(storyId)
+    evenRandomShuffle(storyIds, storyScrapers) { case (storyId, scraper) =>
+      // Signal the monitor before the work begins to avoid a race condition.
+      workMonitor ! WORK_ADDED
+      // Sleep to stagger the work out a bit.
+      Thread.sleep(10)
+      scraper ! SCRAPE_STORY(storyId)
     }
     // Wait until work finished.
     Thread.sleep(1000)
@@ -71,13 +74,15 @@ object Scrape {
     }
   }
 
-  private def evenRandomShuffle[A,B](things: Seq[A], thingDoers: Seq[B])(work: (A, B) => Unit): Unit = {
+  private def evenRandomShuffle[A, B](things: Seq[A], thingDoers: Seq[B])(
+      work: (A, B) => Unit
+  ): Unit = {
     Random
       .shuffle(things)
       .grouped(thingDoers.size)
       .foreach { ids =>
-        ids.zipWithIndex.foreach {
-          case (thing, doerIndex) => work(thing, thingDoers(doerIndex))
+        ids.zipWithIndex.foreach { case (thing, doerIndex) =>
+          work(thing, thingDoers(doerIndex))
         }
       }
   }
