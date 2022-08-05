@@ -50,24 +50,24 @@ class Scraper() {
       .map("(\\d+)".r.findFirstIn(_).get)
   }
 
-  def getOnlineUserCounts: Seq[String] = {
-    val browser = new Browser
-    val document = browser.getFromBase("main/current_users.php")
+  // def getOnlineUserCounts: Seq[String] = {
+  //   val browser = new Browser
+  //   val document = browser.getFromBase("main/current_users.php")
 
-    Seq(
-      document.selects(Paths.userCounts.registeredUsers, "wtf").text(),
-      document.selects(Paths.userCounts.registeredAuthors, "wtf").text(),
-      document.selects(Paths.userCounts.preferredAuthors, "wtf").text(),
-      document.selects(Paths.userCounts.moderators, "wtf").text(),
-      document.selects(Paths.userCounts.seniorModerators, "wtf").text(),
-      document.selects(Paths.userCounts.seniorStaff, "wtf").text(),
-      document.selects(Paths.userCounts.privateSessions, "wtf").text(),
-      document.selects(Paths.userCounts.totalLoggedIn, "wtf").text(),
-      document.selects(Paths.userCounts.guestVisitors, "wtf").text(),
-      document.selects(Paths.userCounts.totalSiteUsers, "wtf").text()
-    )
-      .map(_.replace(",", ""))
-  }
+  //   Seq(
+  //     document.selects(Paths.userCounts.registeredUsers, "wtf").text(),
+  //     document.selects(Paths.userCounts.registeredAuthors, "wtf").text(),
+  //     document.selects(Paths.userCounts.preferredAuthors, "wtf").text(),
+  //     document.selects(Paths.userCounts.moderators, "wtf").text(),
+  //     document.selects(Paths.userCounts.seniorModerators, "wtf").text(),
+  //     document.selects(Paths.userCounts.seniorStaff, "wtf").text(),
+  //     document.selects(Paths.userCounts.privateSessions, "wtf").text(),
+  //     document.selects(Paths.userCounts.totalLoggedIn, "wtf").text(),
+  //     document.selects(Paths.userCounts.guestVisitors, "wtf").text(),
+  //     document.selects(Paths.userCounts.totalSiteUsers, "wtf").text()
+  //   )
+  //     .map(_.replace(",", ""))
+  // }
 
   def isRateLimited(doc: Document): Boolean = {
     Try(

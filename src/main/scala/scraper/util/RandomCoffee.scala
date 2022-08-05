@@ -15,7 +15,9 @@ object RandomCoffee {
     "The coffee machine's broken. Somebody call Carol! Wait, she's on vacation! Who knows how to work this thing!?",
     "Toxic Sludge",
     "Coffee-In-A-Can",
-    "What coffee?"
+    "What coffee?",
+    "COOOOFFFFFEEEEEEEEE",
+    "Tea, Earl Grey, Hot"
   )
   override def toString: String = Random.shuffle(coffees).head
 }

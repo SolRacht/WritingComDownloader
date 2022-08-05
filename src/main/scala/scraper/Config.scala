@@ -11,7 +11,8 @@ case class Config(
     user_ntoken: String,
     storiesToScrape: Seq[String],
     userCountFilePath: String,
-    useConfigStoryList: Boolean
+    useConfigStoryList: Boolean,
+    slowMode: Boolean
 )
 
 object Config {
@@ -21,7 +22,8 @@ object Config {
     user_ntoken = config.getString("user_ntoken"),
     storiesToScrape = config.getStringList("stories").asScala.toSeq.distinct,
     userCountFilePath = config.getString("user_count_file_path"),
-    useConfigStoryList = config.getBoolean("use_config_stories")
+    useConfigStoryList = config.getBoolean("use_config_stories"),
+    slowMode = config.getBoolean("slow_mode")
   )
   def get: Config = conf
 }

@@ -10,10 +10,8 @@ import scraper.scraping.Scraper
 import scala.util.Random
 
 object Scrape {
-  // The number of actors scraping chapters
+  // Set number of actors
   val NUM_CHAPTER_SCRAPERS = 5
-
-  // The number of actors scraping outlines
   val NUM_OUTLINE_SCRAPERS = 5
 
   private def setupActors(working: AtomicBoolean) = {
@@ -40,6 +38,11 @@ object Scrape {
   }
 
   def apply(config: Config): Unit = {
+    if (config.slowMode) {
+      println("Slow mode is active. Sleeping now and prior to every request. ZZzzzz......")
+      Thread.sleep(1000 * (30 + new Random().nextInt(30)))
+    }
+
     if (config.my_session.isEmpty) {
       println(
         "Configuration `my_session` is blank. Have you entered your writing.com cookies?"

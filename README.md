@@ -20,6 +20,7 @@ Before building, you need to change some values in `src/main/resources/applicato
 - `use_config_stories`: this must be either `true` or `false`
   - `false`: save interactive stories you have favorited. These appear here: `writing.com/main/my_favorites`
   - `true`: only save the stories in `stories`. See the instructions in `application.conf`
+- `slow_mode`: this is active by default to avoid putting too much load on the website and getting IP-blocked. Set to `false` to scrape as fast as possible.
 
 ### Database setup
 
@@ -38,7 +39,7 @@ sqlite3 data.db < db/migration.sql
 Just run:
 
 ```
-docker-compose build
+DOCKER_BUILDKIT=1 docker compose build
 ```
 
 Re-run this every time the code updates, or if you update the configuration file.
@@ -49,10 +50,10 @@ Re-run this every time the code updates, or if you update the configuration file
 
 This will scrape writing.com for stories and save them to your local database.
 
-Run the docker-compose service `scrape`, supplying the path to the database you created earlier as an environment variable:
+Run the dockercompose service `scrape`, supplying the path to the database you created earlier as an environment variable:
 
 ```
-DB=/path/to/data.db docker-compose run scrape
+DB=/path/to/data.db dockercompose run scrape
 ```
 
 ### Rendering HTML
@@ -60,9 +61,9 @@ DB=/path/to/data.db docker-compose run scrape
 This will render your stories into HTML that you can read in your browser. Start at `outline.html`. 
 Note that this is a _very_ basic generator. It writes semantic HTML with no CSS styling.
 
-Run the docker-compose service `render`, supplying the path to your database and the directory in which stories will be written.
+Run the docker compose service `render`, supplying the path to your database and the directory in which stories will be written.
 Supply the same directory over multiple runs: if new chapters are saved, the renderer will add them to the existing story and re-render preceding chapters so that the links work.
 
 ```
-DB=/path/to/wcomdownloader.db RENDER=/path/to/directory/ docker-compose run render
+DB=/path/to/wcomdownloader.db RENDER=/path/to/directory/ docker compose run render
 ```

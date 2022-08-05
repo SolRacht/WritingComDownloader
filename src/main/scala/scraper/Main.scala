@@ -19,7 +19,7 @@ object Main extends App {
     args.map(_.toLowerCase).last match {
       case "render" => Render(db, config)
       case "scrape" => Scrape(config)
-      case "count"  => CountUsers(scraper, config) // Experimental command
+      // case "count"  => CountUsers(scraper, config) // Experimental command
       case _        => println("Unknown command.")
     }
   } catch {
@@ -28,7 +28,7 @@ object Main extends App {
       e.printStackTrace()
       System.exit(1)
   }
-
+  println(s"Completed at ${Instant.now()}")
   println("Thank you for playing!")
   System.exit(0)
 }

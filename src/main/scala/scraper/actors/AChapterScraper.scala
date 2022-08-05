@@ -26,7 +26,7 @@ class AChapterScraper(monitor: ActorRef) extends Actor {
         // There seems to be a race condition I don't understand
         if (!db.chapterExists(id, path)) {
           db.saveChapter(chapter, id, path)
-          println(s"Saved [$title: $path]")
+          println(s"Saved [$title: $path]: \"${chapter.body.substring(0,20)}...\"")
         }
       case Failure(exception) =>
         println(s"FAILED! [$id : $path] reason: ${exception.getMessage}")
