@@ -32,7 +32,7 @@ class Browser {
 
   def sleepRandomIfSlowMode():Unit = {
     if (config.slowMode) {
-      Thread.sleep(1000 * (10 + random.nextInt(5)))
+      Thread.sleep(1000 * (5 + random.nextInt(5)))
     }
   }
 

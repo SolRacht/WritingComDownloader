@@ -2,7 +2,7 @@ logs
 *.html
 target
 project/target
-db/
+db/db.db
 /.idea
 /.idea_modules
 /.classpath
