@@ -8,7 +8,7 @@ This program scrapes writing.com interactive stories. You can:
 You need a paid (basic or above) writing.com account to use this. It cannot handle the "Interactive Stories are Temporarily Unavailable" error page. 
 
 ```diff
-! Be careful! It's possible to get IP-banned by writing.com for using this.
+! Be careful! It's possible to get IP-banned by writing.com when using this.
 ```
 
 ## Setup
