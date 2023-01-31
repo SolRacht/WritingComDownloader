@@ -38,7 +38,7 @@ class ScraperTest extends AnyFlatSpec with Matchers {
       assert(chapter.title.equals("You got the Job!!!"))
       assert(
         chapter.body.startsWith(
-          "You stare up at a huge beautiful blonde"
+          "<br> You stare up at a huge beautiful blonde"
         )
       )
       assert(chapter.author.nonEmpty)
@@ -73,7 +73,7 @@ class ScraperTest extends AnyFlatSpec with Matchers {
   it should "scrape normal chapter" in {
     test("1373411-Tiny-Life-Guard", "112222111122") { chapter =>
       assert(chapter.title.equals("Juli to the rescue?"))
-      assert(chapter.body.startsWith("You hear Roxy"))
+      assert(chapter.body.startsWith("<br>You hear Roxy"))
       assert(chapter.author.nonEmpty)
       assert(chapter.author === Some("rocky4mayor"))
       assert(chapter.choices.length === 2, chapter.choices)
@@ -97,7 +97,7 @@ class ScraperTest extends AnyFlatSpec with Matchers {
   it should "scrape another normal chapter" in {
     test("2188228-Shrink-as-you-want-REWARDS", "1343221") { chapter =>
       assert(chapter.title.equals("Jump and cling on."))
-      assert(chapter.body.startsWith("You decided to"))
+      assert(chapter.body.startsWith("<br>You decided to"))
       assert(chapter.author.nonEmpty)
       assert(chapter.author === Some("Mc Writer"))
       assert(chapter.choices.length === 3, chapter.choices)
@@ -113,10 +113,26 @@ class ScraperTest extends AnyFlatSpec with Matchers {
     }
   }
 
+  it should "scrape a chapter that has again changed" in {
+    test("2246771-My-Shrunken-Life-Re-Upload", "12222121212112311113211311311352111114") { chapter: Chapter =>
+      assert(chapter.title.equals("Extended Stay With the Booty"))
+      assert(chapter.body.startsWith("<br>Squinting"))
+      assert(chapter.author.isDefined)
+      assert(chapter.choices.length === 5, chapter.choices)
+      assert(
+        chapter
+          .choices(0)
+          .name
+          .contains("Midori chooses"),
+        chapter.choices
+      )
+    }
+  }
+
   it should "scrape a missing author chapter" in {
     test("1373411-Tiny-Life-Guard", "1151111112221211") { chapter: Chapter =>
       assert(chapter.title.equals("The Foreign Girl's Tan"))
-      assert(chapter.body.startsWith("Elsa was tired"))
+      assert(chapter.body.startsWith("<br>Elsa was tired"))
       assert(chapter.author.isEmpty)
       assert(chapter.choices.length === 2, chapter.choices)
       assert(
@@ -139,7 +155,7 @@ class ScraperTest extends AnyFlatSpec with Matchers {
   it should "scrape a deadend" in {
     test("1373411-Tiny-Life-Guard", "143111112211212222") { chapter =>
       assert(chapter.title.equals("The Perfect Prison"))
-      assert(chapter.body.contains("Jim spent the night in Kims boob"))
+      assert(chapter.body.contains("<br>\n<br> Jim spent the night in Kims boob"))
       assert(chapter.author.isDefined)
       assert(chapter.author.get === "The Dwarf")
       assert(chapter.choices.length === 0, chapter.choices)
@@ -158,7 +174,7 @@ class ScraperTest extends AnyFlatSpec with Matchers {
     test("1530602-Pass-the-Write-Baton", "11111") { chapter =>
       assert(
         chapter.body.startsWith(
-          "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Do you see that little"
+          "<br> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Do you see that little"
         )
       )
     }
